@@ -114,6 +114,14 @@ CREATE TABLE ecrit(
     CONSTRAINT EcritPK PRIMARY KEY (email, idArticle, idLaboratoire)
 );
 
+/* Définition des vues */
+CREATE VIEW domaine_populaire (nom, nombre_articles) AS (
+    SELECT nom, COUNT(*) AS nombre_articles
+    FROM domaine_article NATURAL JOIN domaine NATURAL JOIN article
+    GROUP BY annee_pub
+    ORDER BY nombre_articles DESC
+);
+
 
 /* Insertion des données dans les tables */
 
