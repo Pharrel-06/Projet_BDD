@@ -121,6 +121,9 @@ INSERT INTO personne (nom, prenom) VALUES
 ('FLeuranvil', 'Pharrel'),
 ('Abrial', 'TOM');
 
+INSERT INTO administrateur (idAdministrateur, mot_de_passe, idPersonne) VALUES
+(1, 'adminpass1', 1);
+
 INSERT INTO auteur (email, site_web, idPersonne) VALUES
 ('fleuranvil@gmail.com', 'www.fleuranvil.com', 1),
 ('abrial@gmail.com', 'www.abrial.com', 2);
