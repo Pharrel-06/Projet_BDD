@@ -119,7 +119,8 @@ CREATE TABLE ecrit(
 
 INSERT INTO personne (nom, prenom) VALUES
 ('FLeuranvil', 'Pharrel'),
-('Abrial', 'TOM');
+('Abrial', 'Tom'),
+('Nanthagobal', 'Iraijalagan');
 
 INSERT INTO administrateur (idAdministrateur, mot_de_passe, idPersonne) VALUES
 (1, 'adminpass1', 1);
