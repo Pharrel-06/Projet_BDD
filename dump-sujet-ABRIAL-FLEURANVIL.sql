@@ -33,17 +33,19 @@ CREATE TABLE administrateur(
 CREATE TABLE auteur(
     email varchar(50) PRIMARY KEY,
     site_web varchar(50),
-    idPersonne serial REFERENCES personne(idPersonne)
+    idPersonne serial REFERENCES personne(idPersonne),
+    CONSTRAINT Verif_email CHECK (email LIKE '%@%.%'),
+    CONSTRAINT Verif_site_web CHECK (site_web LIKE 'www.%')
 );
 
 CREATE TABLE comite(
     idComite serial PRIMARY KEY,
-    nom varchar(25)
+    nom varchar(50)
 );
 
 CREATE TABLE revue(
     idRevue serial PRIMARY KEY,
-    nom varchar(25),
+    nom varchar(50),
     idComite serial REFERENCES comite(idComite)
 );
 
@@ -54,12 +56,17 @@ CREATE TABLE langue(
 CREATE TABLE article(
     idArticle serial PRIMARY KEY,
     nb_page int,
-    annee_pub char(4),
+    annee_pub date,
     site_web varchar(50),
     idRevue serial REFERENCES revue(idRevue),
     volume int,
     numero int,
-    nom varchar(25) REFERENCES langue(nom)
+    nom varchar(25) REFERENCES langue(nom),
+    CONSTRAINT nb_page_positive CHECK (nb_page > 0),
+    CONSTRAINT annee_pub_valid CHECK (annee_pub BETWEEN '1900-01-01' AND GETDATE()),
+    CONSTRAINT Verif_site_web_article CHECK (site_web LIKE 'www.%'),
+    CONSTRAINT volume_positive CHECK (volume > 0),
+    CONSTRAINT numero_positive CHECK (numero > 0)
 );
 
 CREATE TABLE domaine(
@@ -80,11 +87,12 @@ CREATE TABLE ville(
 
 CREATE TABLE laboratoire(
     idLaboratoire serial PRIMARY KEY,
-    nom varchar(25),
+    nom varchar(50),
     adresse varchar(50),
     site_web varchar(50),
     type varchar(50),
-    idVille serial REFERENCES ville(idVille)
+    idVille serial REFERENCES ville(idVille),
+    CONSTRAINT Verif_site_web_laboratoire CHECK (site_web LIKE 'www.%')
 );
 
 /* Création des tables pour les associations */
@@ -92,7 +100,8 @@ CREATE TABLE laboratoire(
 CREATE TABLE comite_auteur(
     email varchar(50) REFERENCES auteur(email),
     idComite serial REFERENCES comite(idComite),
-    CONSTRAINT Comite_AuteurPK PRIMARY KEY (email, idComite)
+    CONSTRAINT Comite_AuteurPK PRIMARY KEY (email, idComite),
+    CONSTRAINT Verif_email_comite_auteur CHECK (email LIKE '%@%.%')
 );
 
 CREATE TABLE domaine_article(
@@ -111,7 +120,8 @@ CREATE TABLE ecrit(
     email varchar(50) REFERENCES auteur(email),
     idArticle serial REFERENCES article(idArticle),
     idLaboratoire serial REFERENCES laboratoire(idLaboratoire),
-    CONSTRAINT EcritPK PRIMARY KEY (email, idArticle, idLaboratoire)
+    CONSTRAINT EcritPK PRIMARY KEY (email, idArticle, idLaboratoire),
+    CONSTRAINT Verif_email_ecrit CHECK (email LIKE '%@%.%')
 );
 
 /* Définition des vues */
@@ -130,6 +140,9 @@ CREATE VIEW domaine_populaire (nom, nombre_articles) AS
 INSERT INTO personne (nom, prenom) VALUES
 ('FLeuranvil', 'Pharrel'),
 ('Abrial', 'Tom'),
+('Brenchemmacher', 'Alexandre'),
+('Sengphrachanh', 'Gabriel'),
+('Ben Malek', 'Amine'),
 ('Nanthagobal', 'Iraijalagan');
 
 INSERT INTO administrateur (idAdministrateur, mot_de_passe, idPersonne) VALUES
@@ -137,10 +150,14 @@ INSERT INTO administrateur (idAdministrateur, mot_de_passe, idPersonne) VALUES
 
 INSERT INTO auteur (email, site_web, idPersonne) VALUES
 ('fleuranvil@gmail.com', 'www.fleuranvil.com', 1),
-('abrial@gmail.com', 'www.abrial.com', 2);
+('abrial@gmail.com', 'www.abrial.com', 2),
+('Brenchenmmacher@gmail.com', 'www.brenchenmmacher.com', 3),
+('Sengphrachanh@gmail.com', 'www.sengphrachanh.com', 4),
+('BenMalek@gmail.com', 'www.benmalek.com', 5),
+('Nanthagobal@gmail.com', 'www.nanthagobal.com', 6);
 
 INSERT INTO comite (nom) VALUES
-('Comité Scientifique');
+('Comité Scientifique Eiffel');
 
 INSERT INTO revue (nom, idComite) VALUES
 ('Revue des Sciences', 1);
@@ -155,7 +172,10 @@ INSERT INTO article (nb_page, annee_pub, site_web, idRevue, volume, numero, nom)
 
 INSERT INTO domaine (nom) VALUES
 ('Informatique'),
-('Mathématiques');
+('Electronique'),
+('Mathématiques'),
+('Physique'),
+('Histoire des Arts');
 
 INSERT INTO pays (nom) VALUES
 ('France'),
@@ -163,11 +183,19 @@ INSERT INTO pays (nom) VALUES
 
 INSERT INTO ville (nom, idPays) VALUES
 ('Paris', 1),
-('New York', 2);
+('Champs-sur-Marne', 2),
+('Lyon', 3),
+('New York', 4),
+('San Francisco', 5),
+('Chicago', 6),
+('Boston', 7),
+('Seattle', 8),
+('Los Angeles', 9),
+('Miami', 10);
 
 INSERT INTO laboratoire (nom, adresse, site_web, type, idVille) VALUES
-('Lab Informatique', '123 Rue de Paris', 'www.labinfo.com', 'Public', 1),
-('Lab Mathématiques', '456 Avenue de New York', 'www.labmaths.com', 'Privé', 2);
+('Lab Informatique Eiffel', '5 bd Decartes', 'www.labinfo-eiffel.com', 'universite', 1),
+('Lab National des Mathématiques', '456 Avenue de Paris', 'www.labmaths-paris.com', 'labo', 2);
 
 INSERT INTO comite_auteur (email, idComite) VALUES
 ('fleuranvil@gmail.com', 1),
