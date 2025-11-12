@@ -124,15 +124,25 @@ CREATE TABLE ecrit(
 );
 
 /* Définition des vues */
-CREATE VIEW domaine_populaire (annee, nom, nombre_articles) AS
-    SELECT a.annee_pub, d.nom, COUNT(*) AS nombre_articles
-    FROM domaine_article AS da
-    JOIN domaine AS d ON da.idDomaine = d.idDomaine
-    JOIN article AS a ON da.idArticle = a.idArticle
-    GROUP BY a.annee_pub, d.nom 
-    ORDER BY a.annee_pub DESC;
-
-
+CREATE VIEW domaine_populaire AS
+    WITH domaine_par_annee AS (
+        SELECT a.annee_pub AS annee, d.nom AS domaine, COUNT(*) AS nombre_articles
+        FROM domaine_article da
+        JOIN domaine d ON da.idDomaine = d.idDomaine
+        JOIN article a ON da.idArticle = a.idArticle
+        WHERE a.annee_pub >= '2015'
+        GROUP BY a.annee_pub, d.nom
+    ), 
+    domaine_max_par_annee AS (
+        SELECT annee, MAX(nombre_articles) AS max_articles
+        FROM domaine_par_annee
+        GROUP BY annee
+    )
+    SELECT dpa.annee, dpa.domaine, dpa.nombre_articles
+    FROM domaine_par_annee AS dpa 
+    JOIN domaine_max_par_annee AS dma ON dma.annee = dpa.annee AND dpa.nombre_articles = dma.max_articles
+    ORDER BY dpa.annee DESC;
+    
 /* Insertion des données dans les tables */
 
 INSERT INTO personne (nom, prenom) VALUES
