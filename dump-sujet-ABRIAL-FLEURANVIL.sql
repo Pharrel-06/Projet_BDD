@@ -56,14 +56,13 @@ CREATE TABLE langue(
 CREATE TABLE article(
     idArticle serial PRIMARY KEY,
     nb_page int,
-    annee_pub date,
+    annee_pub char(4),
     site_web varchar(50),
     idRevue serial REFERENCES revue(idRevue),
     volume int,
     numero int,
     nom varchar(25) REFERENCES langue(nom),
     CONSTRAINT nb_page_positive CHECK (nb_page > 0),
-    CONSTRAINT annee_pub_valid CHECK (annee_pub BETWEEN '1900-01-01' AND GETDATE()),
     CONSTRAINT Verif_site_web_article CHECK (site_web LIKE 'www.%'),
     CONSTRAINT volume_positive CHECK (volume > 0),
     CONSTRAINT numero_positive CHECK (numero > 0)
@@ -183,15 +182,15 @@ INSERT INTO pays (nom) VALUES
 
 INSERT INTO ville (nom, idPays) VALUES
 ('Paris', 1),
-('Champs-sur-Marne', 2),
-('Lyon', 3),
-('New York', 4),
-('San Francisco', 5),
-('Chicago', 6),
-('Boston', 7),
-('Seattle', 8),
-('Los Angeles', 9),
-('Miami', 10);
+('Champs-sur-Marne', 1),
+('Lyon', 1),
+('New York', 2),
+('San Francisco', 2),
+('Chicago', 2),
+('Boston', 2),
+('Seattle', 2),
+('Los Angeles', 2),
+('Miami', 2);
 
 INSERT INTO laboratoire (nom, adresse, site_web, type, idVille) VALUES
 ('Lab Informatique Eiffel', '5 bd Decartes', 'www.labinfo-eiffel.com', 'universite', 1),
