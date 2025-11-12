@@ -124,14 +124,13 @@ CREATE TABLE ecrit(
 );
 
 /* Définition des vues */
-CREATE VIEW domaine_populaire (nom, nombre_articles) AS
-    SELECT d.nom, COUNT(*) AS nombre_articles
+CREATE VIEW domaine_populaire (annee, nom, nombre_articles) AS
+    SELECT a.annee_pub, d.nom, COUNT(*) AS nombre_articles
     FROM domaine_article AS da
     JOIN domaine AS d ON da.idDomaine = d.idDomaine
     JOIN article AS a ON da.idArticle = a.idArticle
-    GROUP BY d.nom
-    ORDER BY nombre_articles DESC
-    LIMIT 1;
+    GROUP BY a.annee_pub, d.nom 
+    ORDER BY a.annee_pub DESC;
 
 
 /* Insertion des données dans les tables */
