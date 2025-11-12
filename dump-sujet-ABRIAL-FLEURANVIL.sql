@@ -138,6 +138,7 @@ CREATE VIEW domaine_populaire (annee, nom, nombre_articles) AS
 INSERT INTO personne (nom, prenom) VALUES
 ('FLeuranvil', 'Pharrel'),
 ('Abrial', 'Tom'),
+('Francis', 'Nadime'),
 ('Brenchemmacher', 'Alexandre'),
 ('Sengphrachanh', 'Gabriel'),
 ('Ben Malek', 'Amine'),
@@ -147,12 +148,13 @@ INSERT INTO administrateur (idAdministrateur, mot_de_passe, idPersonne) VALUES
 (1, 'adminpass1', 1);
 
 INSERT INTO auteur (email, site_web, idPersonne) VALUES
-('fleuranvil@gmail.com', 'www.fleuranvil.com', 1),
-('abrial@gmail.com', 'www.abrial.com', 2),
-('Brenchenmmacher@gmail.com', 'www.brenchenmmacher.com', 3),
-('Sengphrachanh@gmail.com', 'www.sengphrachanh.com', 4),
-('BenMalek@gmail.com', 'www.benmalek.com', 5),
-('Nanthagobal@gmail.com', 'www.nanthagobal.com', 6);
+('Fleuranvil@gmail.com', 'www.fleuranvil.com', 1),
+('Abrial@gmail.com', 'www.abrial.com', 2),
+('Francis@gmail.com', 'www.francis.com', 3),
+('Brenchenmmacher@gmail.com', 'www.brenchenmmacher.com', 4),
+('Sengphrachanh@gmail.com', 'www.sengphrachanh.com', 5),
+('BenMalek@gmail.com', 'www.benmalek.com', 6),
+('Nanthagobal@gmail.com', 'www.nanthagobal.com', 7);
 
 INSERT INTO comite (nom) VALUES
 ('Comité Scientifique Eiffel');
@@ -165,8 +167,12 @@ INSERT INTO langue (nom) VALUES
 ('Anglais');
 
 INSERT INTO article (nb_page, annee_pub, site_web, idRevue, volume, numero, nom) VALUES
-(10, '2020', 'www.bdd.com', 1, 5, 2, 'Français'),
-(15, '2021', 'www.algebre.com', 1, 6, 1, 'Anglais');
+(10, '2020', 'www.bdd-l2.com', 1, 5, 2, 'Français'), 
+(5, '2020', 'www.bdd-l3.com', 1, 5, 2, 'Français'), 
+(12, '2020', 'www.systeme-embarque.com', 1, 4, 3, 'Anglais'),
+(15, '2015', 'www.algebre.com', 1, 6, 1, 'Français'),
+(8, '2014', 'www.physique.com', 1, 3, 4, 'Anglais'),
+(3, '2025', 'www.histoire-joconde.com', 1, 7, 1, 'Français');
 
 INSERT INTO domaine (nom) VALUES
 ('Informatique'),
@@ -192,23 +198,35 @@ INSERT INTO ville (nom, idPays) VALUES
 ('Miami', 2);
 
 INSERT INTO laboratoire (nom, adresse, site_web, type, idVille) VALUES
-('Lab Informatique Eiffel', '5 bd Decartes', 'www.labinfo-eiffel.com', 'universite', 1),
-('Lab National des Mathématiques', '456 Avenue de Paris', 'www.labmaths-paris.com', 'labo', 2);
+('Lab Informatique Eiffel', '5 bd Decartes', 'www.labinfo-eiffel.com', 'universite', 2),
+('Lab National des Mathématiques', '456 Avenue de Paris', 'www.labmaths-paris.com', 'labo', 1),
+('Lab Electronique Avancée', '789 Rue de la Science', 'www.labelectronique.com', 'centre de recherche', 4),
+('Lab Histoire des Arts', '321 Boulevard des Arts', 'www.labhistoirearts.com', 'universite', 9);
 
 INSERT INTO comite_auteur (email, idComite) VALUES
-('fleuranvil@gmail.com', 1),
-('abrial@gmail.com', 1);
+('Fleuranvil@gmail.com', 1),
+('Abrial@gmail.com', 1);
 
 INSERT INTO domaine_article (idDomaine, idArticle) VALUES
 (1, 1),
-(2, 2);
+(1, 2),
+(2, 3),
+(3, 4),
+(4, 5),
+(5, 6);
 
 INSERT INTO cite (idArticle_biblio, idArticle_cite) VALUES
 (1, 2),
 (2, 1);
 
 INSERT INTO ecrit (email, idArticle, idLaboratoire) VALUES
-('fleuranvil@gmail.com', 1, 1),
-('abrial@gmail.com', 2, 1);
+('Francis@gmail.com', 1, 1),
+('Francis@gmail.com', 2, 1),
+('BenMalek@gmail.com', 3, 3),
+('Nanthagobal@gmail.com', 4, 2),
+('Fleuranvil@gmail.com', 5, 1),
+('Brenchenmmacher@gmail.com', 6, 4);
+
+
 
 -- Fin du dump de la base donnée --
