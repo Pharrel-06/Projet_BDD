@@ -143,9 +143,20 @@ CREATE VIEW domaine_populaire AS
     JOIN domaine_max_par_annee AS dma ON dma.annee = dpa.annee AND dpa.nombre_articles = dma.max_articles
     ORDER BY dpa.annee DESC;
 
+CREATE VIEW auteur_affluant AS
+    WITH nb_ref_auteur AS (        
+        SELECT email, idLaboratoire, COUNT(email) AS nb_articles FROM ecrit GROUP BY email, idLaboratoire
+    ),
+    nb_max_ref AS (
+        SELECT idLaboratoire, MAX(nb_articles) AS max_articles FROM nb_ref_auteur GROUP BY idLaboratoire
+    )
+    SELECT email, nra.idLaboratoire, nb_articles
+    FROM nb_ref_auteur AS nra
+    JOIN nb_max_ref AS nmr ON nmr.idLaboratoire = nra.idLaboratoire AND nra.nb_articles = nmr.max_articles
+    ORDER BY nmr.idLaboratoire;
+
 
 /* Insertion des données dans les tables */
-
 INSERT INTO personne (nom, prenom) VALUES
 ('FLeuranvil', 'Pharrel'),
 ('Abrial', 'Tom'),
@@ -245,14 +256,14 @@ INSERT INTO cite (idArticle_biblio, idArticle_cite) VALUES
 (3, 5);
 
 INSERT INTO ecrit (email, idArticle, idLaboratoire) VALUES
-('Francis@gmail.com', 1, 1),
-('Fleuranvil@gmail.com', 1, 1),
-('Francis@gmail.com', 2, 1),
-('BenMalek@gmail.com', 3, 3),
-('Nanthagobal@gmail.com', 4, 1),
-('Fleuranvil@gmail.com', 5, 1),
+('Francis@gmail.com',         1, 1),
+('Fleuranvil@gmail.com',      1, 2),
+('Francis@gmail.com',         2, 1),
+('BenMalek@gmail.com',        3, 3),
+('Nanthagobal@gmail.com',     4, 1),
+('Fleuranvil@gmail.com',      5, 2),
 ('Brenchenmmacher@gmail.com', 6, 4),
-('Nanthagobal@gmail.com', 7, 2);
+('Nanthagobal@gmail.com',     7, 2);
 
 
 
