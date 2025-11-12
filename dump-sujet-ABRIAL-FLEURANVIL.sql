@@ -115,12 +115,14 @@ CREATE TABLE ecrit(
 );
 
 /* Définition des vues */
-CREATE VIEW domaine_populaire (nom, nombre_articles) AS (
-    SELECT nom, COUNT(*) AS nombre_articles
-    FROM domaine_article NATURAL JOIN domaine NATURAL JOIN article
-    GROUP BY annee_pub
+CREATE VIEW domaine_populaire (nom, nombre_articles) AS
+    SELECT d.nom, COUNT(*) AS nombre_articles
+    FROM domaine_article AS da
+    JOIN domaine AS d ON da.idDomaine = d.idDomaine
+    JOIN article AS a ON da.idArticle = a.idArticle
+    GROUP BY d.nom
     ORDER BY nombre_articles DESC
-);
+    LIMIT 1;
 
 
 /* Insertion des données dans les tables */
@@ -184,5 +186,3 @@ INSERT INTO ecrit (email, idArticle, idLaboratoire) VALUES
 ('abrial@gmail.com', 2, 1);
 
 -- Fin du dump de la base donnée --
-
-
