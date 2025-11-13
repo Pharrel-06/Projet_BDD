@@ -56,13 +56,14 @@ CREATE TABLE langue(
 CREATE TABLE article(
     idArticle serial PRIMARY KEY,
     nb_page int default 1 NOT NULL,
-    annee_pub char(4) NOT NULL,
+    annee_pub int NOT NULL,
     site_web_article varchar(50),
     idRevue serial REFERENCES revue(idRevue),
     volume int default 1,
     numero int default 1,
     nom_langue varchar(25) REFERENCES langue(nom_langue),
     CONSTRAINT nb_page_positive CHECK (nb_page > 0),
+    CONSTRAINT annee_pub_valide CHECK (annee_pub BETWEEN 0 AND 2025),
     CONSTRAINT Verif_site_web_article CHECK (site_web_article LIKE 'www.%'),
     CONSTRAINT volume_positive CHECK (volume > 0),
     CONSTRAINT numero_positive CHECK (numero > 0)
@@ -130,7 +131,7 @@ CREATE VIEW domaine_populaire AS
         FROM domaine_article da
         JOIN domaine d ON da.idDomaine = d.idDomaine
         JOIN article a ON da.idArticle = a.idArticle
-        WHERE a.annee_pub >= '2015'
+        WHERE a.annee_pub >= 2015
         GROUP BY a.annee_pub, d.nom_domaine
     ), 
     domaine_max_par_annee AS (
@@ -199,27 +200,26 @@ INSERT INTO langue (nom_langue) VALUES
 ('Anglais');
 
 INSERT INTO article (nb_page, annee_pub, site_web_article, idRevue, volume, numero, nom_langue) VALUES
-(10, '2020', 'www.bdd-l2.com', 1, 5, 2, 'Français'), --1
-(5, '2020', 'www.bdd-l3.com', 1, 5, 2, 'Français'), 
-(12, '2015', 'www.systeme-embarque.com', 4, 4, 3, 'Anglais'),
-(15, '2020', 'www.algebre-l2.com', 1, 6, 1, 'Français'),
-(8, '2015', 'www.physique.com', 4, 3, 4, 'Anglais'), --5
-(3, '2025', 'www.physique-quantique.com', 4, 7, 1, 'Anglais'),
-(20, '2014', 'www.algebre-complexe.com', 2, 2, 1, 'Français'),
-(7, '2013', 'www.sport-sante.com', 3, 1, 1, 'Français'),
-(9, '2021', 'www.electronique-avancee.com', 4, 5, 2, 'Anglais'),
-(11, '2024', 'www.JO2024-paris.com', 3, 4, 3, 'Français'), --10
-(6, '2024', 'www.JO2028-los-angeles.com', 3, 3, 2, 'Anglais'),
-(14, '2017', 'www.maths-appliquees.com', 1, 2, 1, 'Français'),
-(4, '2016', 'www.physique-spatiale.com', 5, 1, 1, 'Anglais'),
-(13, '2022', 'www.informatique-quantique.com', 2, 6, 2, 'Anglais'),
-(16, '2023', 'www.data-science.com', 4, 7, 3, 'Anglais'), --15
-(18, '2024', 'www.machine-learning.com', 5, 8, 1, 'Anglais'),
-(22, '2010', 'www.sport-automobile.com', 4, 5, 4, 'Français'),
-(19, '2024', 'www.sport-et-santé.com', 6, 4, 2, 'Français'),
-(21, '2018', 'www.santé-alimentation.com', 6, 3, 3, 'Français'),
-(17, '2017', 'www.satellite.com', 5, 2, 2, 'Anglais'); --20
-
+(10, 2020, 'www.bdd-l2.com', 1, 5, 2, 'Français'), --1
+(5, 2020, 'www.bdd-l3.com', 1, 5, 2, 'Français'), 
+(12, 2015, 'www.systeme-embarque.com', 4, 4, 3, 'Anglais'),
+(15, 2020, 'www.algebre-l2.com', 1, 6, 1, 'Français'),
+(8, 2015, 'www.physique.com', 4, 3, 4, 'Anglais'), --5
+(3, 2025, 'www.physique-quantique.com', 4, 7, 1, 'Anglais'),
+(20, 2014, 'www.algebre-complexe.com', 2, 2, 1, 'Français'),
+(7, 2013, 'www.sport-sante.com', 3, 1, 1, 'Anglais'),
+(9, 2021, 'www.electronique-avancee.com', 4, 5, 2, 'Anglais'),
+(11, 2024, 'www.JO2024-paris.com', 3, 4, 3, 'Français'), --10
+(6, 2024, 'www.JO2028-los-angeles.com', 3, 3, 2, 'Anglais'),
+(14, 2017, 'www.maths-appliquees.com', 1, 2, 1, 'Français'),
+(4, 2016, 'www.physique-spatiale.com', 5, 1, 1, 'Anglais'),
+(13, 2022, 'www.informatique-quantique.com', 2, 6, 2, 'Anglais'),
+(16, 2023, 'www.data-science.com', 4, 7, 3, 'Anglais'), --15
+(18, 2024, 'www.machine-learning.com', 5, 8, 1, 'Anglais'),
+(22, 2010, 'www.sport-automobile.com', 4, 5, 4, 'Français'),
+(19, 2024, 'www.sport-et-santé.com', 6, 4, 2, 'Français'),
+(21, 2018, 'www.santé-alimentation.com', 6, 3, 3, 'Français'),
+(17, 2017, 'www.satellite.com', 5, 2, 2, 'Anglais'); --20
 
 INSERT INTO domaine (nom_domaine) VALUES
 ('Informatique'),
@@ -255,7 +255,20 @@ INSERT INTO laboratoire (nom_laboratoire, adresse, site_web_laboratoire, type, i
 
 INSERT INTO comite_auteur (email, idComite) VALUES
 ('Fleuranvil@gmail.com', 1),
-('Abrial@gmail.com', 1);
+('Fleuranvil@gmail.com', 3),
+('Fleuranvil@gmail.com', 4),
+('Abrial@gmail.com', 2),
+('Abrial@gmail.com', 3),
+('Abrial@gmail.com', 4),
+('Francis@gmail.com', 1),
+('Brenchenmmacher@gmail.com', 2),
+('Brenchenmmacher@gmail.com', 4),
+('Sengphrachanh@gmail.com', 2),
+('BenMalek@gmail.com', 4),
+('Lariviere@gmail.com', 3),
+('Lariviere@gmail.com', 4),
+('Nanthagobal@gmail.com', 1),
+('Nanthagobal@gmail.com', 2);
 
 INSERT INTO domaine_article (idDomaine, idArticle) VALUES
 (1, 1),
@@ -292,7 +305,11 @@ INSERT INTO domaine_article (idDomaine, idArticle) VALUES
 INSERT INTO cite (idArticle_biblio, idArticle_cite) VALUES
 (2, 1),
 (4, 7),
-(3, 5);
+(10,11),
+(4, 12),
+(13,5),
+(18, 19),
+(20,13);
 
 INSERT INTO ecrit (email, idArticle, idLaboratoire) VALUES
 ('Francis@gmail.com',         1, 1),
@@ -316,10 +333,7 @@ INSERT INTO ecrit (email, idArticle, idLaboratoire) VALUES
 ('Sengphrachanh@gmail.com',   17, 5),
 ('Sengphrachanh@gmail.com',   18, 5),
 ('Sengphrachanh@gmail.com',   19, 5),
-('Abrial@gmail.com',       20, 6);
-
-
+('Abrial@gmail.com',          20, 6);
 
 -- Fin du dump de la base donnée --
 
--- SELECT * FROM ecrit WHERE email = 'Nanthagobal@gmail.com';
