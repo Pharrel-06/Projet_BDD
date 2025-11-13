@@ -164,7 +164,7 @@ INSERT INTO personne (nom, prenom) VALUES
 ('Brenchemmacher', 'Alexandre'),
 ('Sengphrachanh', 'Gabriel'),
 ('Ben Malek', 'Amine'),
-('Lariviere', 'Matheo'),
+('Larivière', 'Mathéo'),
 ('Nanthagobal', 'Iraijalagan');
 
 INSERT INTO administrateur (idAdministrateur, mot_de_passe, idPersonne) VALUES
@@ -177,40 +177,57 @@ INSERT INTO auteur (email, site_web_auteur, idPersonne) VALUES
 ('Brenchenmmacher@gmail.com', 'www.brenchenmmacher.com', 4),
 ('Sengphrachanh@gmail.com', 'www.sengphrachanh.com', 5),
 ('BenMalek@gmail.com', 'www.benmalek.com', 6),
-('Nanthagobal@gmail.com', 'www.nanthagobal.com', 7);
+('Lariviere@gmail.com', 'www.lariviere.com', 7),
+('Nanthagobal@gmail.com', 'www.nanthagobal.com', 8);
 
 INSERT INTO comite (nom_comite) VALUES
 ('Comité Scientifique Eiffel'),
 ('Comité Scientifique Paris'),
-('Comité Scientifique USA');
+('Comité Scientifique USA'),
+('Comité Scientifique International');
 
 INSERT INTO revue (nom_revue, idComite) VALUES
 ('Revue des Sciences Eiffel', 1),
-('Revue des Sciences', 2),
-('Revue Historique', 2);
+('Revue des Sciences Françaises', 2),
+('Revue JO', 2),
+('Revue des Sciences Américaines', 3),
+('Revue Internationale des Sciences', 4),
+('Revue Médicale', 2);
 
 INSERT INTO langue (nom_langue) VALUES
 ('Français'),
 ('Anglais');
 
 INSERT INTO article (nb_page, annee_pub, site_web_article, idRevue, volume, numero, nom_langue) VALUES
-(10, '2020', 'www.bdd-l2.com', 1, 5, 2, 'Français'),
+(10, '2020', 'www.bdd-l2.com', 1, 5, 2, 'Français'), --1
 (5, '2020', 'www.bdd-l3.com', 1, 5, 2, 'Français'), 
-(12, '2020', 'www.systeme-embarque.com', 2, 4, 3, 'Anglais'),
-(15, '2015', 'www.algebre-l2.com', 1, 6, 1, 'Français'),
-(8, '2015', 'www.physique.com', 2, 3, 4, 'Anglais'),
-(3, '2025', 'www.histoire-joconde.com', 3, 7, 1, 'Français'),
+(12, '2015', 'www.systeme-embarque.com', 4, 4, 3, 'Anglais'),
+(15, '2020', 'www.algebre-l2.com', 1, 6, 1, 'Français'),
+(8, '2015', 'www.physique.com', 4, 3, 4, 'Anglais'), --5
+(3, '2025', 'www.physique-quantique.com', 4, 7, 1, 'Anglais'),
 (20, '2014', 'www.algebre-complexe.com', 2, 2, 1, 'Français'),
-(7, '2013', 'www.sport-sante.com', 1, 1, 1, 'Français'),
-(9, '2021', 'www.electronique-avancee.com', 2, 5, 2, 'Anglais');
+(7, '2013', 'www.sport-sante.com', 3, 1, 1, 'Français'),
+(9, '2021', 'www.electronique-avancee.com', 4, 5, 2, 'Anglais'),
+(11, '2024', 'www.JO2024-paris.com', 3, 4, 3, 'Français'), --10
+(6, '2024', 'www.JO2028-los-angeles.com', 3, 3, 2, 'Anglais'),
+(14, '2017', 'www.maths-appliquees.com', 1, 2, 1, 'Français'),
+(4, '2016', 'www.physique-spatiale.com', 5, 1, 1, 'Anglais'),
+(13, '2022', 'www.informatique-quantique.com', 2, 6, 2, 'Anglais'),
+(16, '2023', 'www.data-science.com', 4, 7, 3, 'Anglais'), --15
+(18, '2024', 'www.machine-learning.com', 5, 8, 1, 'Anglais'),
+(22, '2010', 'www.sport-automobile.com', 4, 5, 4, 'Français'),
+(19, '2024', 'www.sport-et-santé.com', 6, 4, 2, 'Français'),
+(21, '2018', 'www.santé-alimentation.com', 6, 3, 3, 'Français'),
+(17, '2017', 'www.satellite.com', 5, 2, 2, 'Anglais'); --20
+
 
 INSERT INTO domaine (nom_domaine) VALUES
 ('Informatique'),
 ('Electronique'),
 ('Mathématiques'),
 ('Physique'),
-('Histoire des Arts'),
-('Sport');
+('Sport'),
+('Médecine');
 
 INSERT INTO pays (nom_pays) VALUES
 ('France'),
@@ -221,18 +238,20 @@ INSERT INTO ville (nom_ville, idPays) VALUES
 ('Champs-sur-Marne', 1),
 ('Lyon', 1),
 ('New York', 2),
-('San Francisco', 2),
+('San Francisco', 2), --5
 ('Chicago', 2),
 ('Boston', 2),
 ('Seattle', 2),
-('Los Angeles', 2),
+('Los Angeles', 2), --10
 ('Miami', 2);
 
 INSERT INTO laboratoire (nom_laboratoire, adresse, site_web_laboratoire, type, idVille) VALUES
 ('Lab Eiffel', '5 bd Decartes', 'www.lab-eiffel.com', 'universite', 2),
 ('Lab National des Mathématiques', '456 Avenue de Paris', 'www.labmaths-paris.com', 'labo', 1),
 ('Lab Electronique Avancée', '789 Rue de la Science', 'www.labelectronique.com', 'centre de recherche', 4),
-('Lab Histoire des Arts', '321 Boulevard des Arts', 'www.labhistoirearts.com', 'universite', 9);
+('Lab Recherche médical', '321 Boulevard Sorbonne', 'www.lab-recherche-medical.com', 'universite', 3),
+('Lab Sport et Santé', '654 Avenue des Athlètes', 'www.lab-sport-sante.com', 'centre de recherche', 1),
+('Lab Science International', '987 Rue des Ordinateurs', 'www.lab-science-international.com', 'labo', 10);
 
 INSERT INTO comite_auteur (email, idComite) VALUES
 ('Fleuranvil@gmail.com', 1),
@@ -241,14 +260,34 @@ INSERT INTO comite_auteur (email, idComite) VALUES
 INSERT INTO domaine_article (idDomaine, idArticle) VALUES
 (1, 1),
 (1, 2),
-(2, 3),
 (1, 3),
+(2, 3),
+(4, 3),
 (3, 4),
 (4, 5),
-(5, 6),
+(4, 6),
 (3, 7),
-(6, 8),
-(2, 9);
+(5, 8),
+(2, 9),
+(5, 10),
+(5, 11),
+(1, 12),
+(3, 12),
+(4, 13),
+(1, 14),
+(4, 14),
+(1, 15),
+(3, 15),
+(1, 16),
+(2, 16),
+(2, 17),
+(5, 17),
+(5, 18),
+(6, 18),
+(6, 19),
+(1, 20),
+(2, 20),
+(4, 20);
 
 INSERT INTO cite (idArticle_biblio, idArticle_cite) VALUES
 (2, 1),
@@ -260,10 +299,24 @@ INSERT INTO ecrit (email, idArticle, idLaboratoire) VALUES
 ('Fleuranvil@gmail.com',      1, 2),
 ('Francis@gmail.com',         2, 1),
 ('BenMalek@gmail.com',        3, 3),
-('Nanthagobal@gmail.com',     4, 1),
+('Nanthagobal@gmail.com',     4, 1), 
 ('Fleuranvil@gmail.com',      5, 2),
-('Brenchenmmacher@gmail.com', 6, 4),
-('Nanthagobal@gmail.com',     7, 2);
+('Lariviere@gmail.com',       6, 4),
+('Nanthagobal@gmail.com',     7, 2),
+('Brenchenmmacher@gmail.com', 8, 5),
+('BenMalek@gmail.com',        9, 3), 
+('Brenchenmmacher@gmail.com', 10, 4),
+('Brenchenmmacher@gmail.com', 11, 4),
+('Nanthagobal@gmail.com',     12, 2),
+('Fleuranvil@gmail.com',      13, 6),
+('Lariviere@gmail.com',       14, 6),
+('Abrial@gmail.com',          15, 6),
+('Nanthagobal@gmail.com',     15, 6),
+('Abrial@gmail.com',          16, 6),
+('Sengphrachanh@gmail.com',   17, 5),
+('Sengphrachanh@gmail.com',   18, 5),
+('Sengphrachanh@gmail.com',   19, 5),
+('Abrial@gmail.com',       20, 6);
 
 
 
