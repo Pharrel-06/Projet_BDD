@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<title>Recherche</title>
+
+<header>
+  <h1 style="text-align:center"> Les archives de Babel </h1>
+  <h2 style="text-align:center"> Recherche </h2>
+</header>
+
+<nav style="text-align:center; background-color:LightGray">
+  <a href="accueil">Accueil</a> -
+  <a href="auteur">Auteurs</a> -
+</nav>
+
+<p>
+  Sur quelle critère voulez vous baser votre recherche : 
+
+  <form method="get" action="accueil">
+
+    <select name="critere">
+        <option value="">Choisir un critère</option>
+        {% for crit in critere_recherche %}
+        <option value="{{crit}}">{{crit}}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Valider">
+
+  </form>
+
+</p>
+
+
+
+</html>

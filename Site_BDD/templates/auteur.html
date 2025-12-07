@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<title>Auteurs</title>
+
+<header>
+  <h1 style="text-align:center"> Les archives de Babel </h1>
+  <h2 style="text-align:center"> Auteurs </h2>
+</header>
+
+<nav style="text-align:center; background-color:LightGray">
+  <a href="accueil">Accueil</a> -
+  <a href="auteur">Auteurs</a>
+</nav>
+
+<p style="text-align:center">
+  Voici la liste de tous les auteurs :
+  <br>
+
+  <table border="1" align="center">
+
+    <thead>
+        <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Prénom</th>
+            <th scope="col">Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for auteur in lst_auteur %}
+        <tr>
+            <th scope="row">{{auteur.nom}}</th>
+            <th scope="row">{{auteur.prenom}}</th>
+            <th scope="row">{{auteur.email}}</th>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+
+  </table>
+</p>
+
+
+
+</html>
