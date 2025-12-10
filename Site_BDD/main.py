@@ -25,6 +25,25 @@ def auteur():
 
     return render_template("auteur.html", lst_auteur = resultat)
 
+@app.route("/auteur/<int:idPerso>")
+def info_auteur(idPerso):
+    # Vérification de l'idPersonne
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT nom, prenom, email, site_web_auteur FROM auteur NATURAL JOIN personne WHERE idPersonne = {idPerso}")
+            resultat_auteur = cur.fetchone()
+    
+    if resultat_auteur != ():
+        # Recherche d'info sur les articles de l'auteur
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT idArticle, annee_pub, site_web_article FROM auteur NATURAL JOIN ecrit NATURAL JOIN article WHERE idPersonne = {idPerso} ORDER BY annee_pub DESC")
+                resultat_article = cur.fetchmany(5)
+        return render_template("info_auteur.html", auteur = resultat_auteur, articles = resultat_article)
+    
+    else:
+        return # Template pour information introuvable
+
 
 if __name__ == '__main__':
     app.run()

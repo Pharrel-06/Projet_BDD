@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <title>Information Auteur</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_css.css') }}">
+</head>
+
+<body>
+    <header>
+  <h1 style="text-align:center"> Les archives de Babel </h1>
+  <h2 style="text-align:center"> Information Auteur </h2>
+</header>
+
+<nav style="text-align:center; background-color:LightGray">
+  <a href="accueil">Accueil</a> -
+  <a href="auteur">Auteurs</a> -
+</nav>
+
+<p>
+  Vous êtes sur la page de l'auteur <b><i>{{auteur.nom}} {{auteur.prenom}}</i></b>. 
+  <br>
+  Voici quelques références d'articles sur lequelles il a participé :
+
+  <ul>
+    {% for info_article in articles %}
+    <li><a href="info_article/{{info_article.idArticle}}">{{info_article.site_web_article}}</a> sortie en {{info_article.annee_pub}} </li>
+    {% endfor %}
+  </ul>
+
+  Voici aussi les informations pour le contacter :
+  <ul>
+    <li>Adresse mail : <b>{{auteur.email}}</b></li>
+    <li>Site personnel : <b>{{auteur.site_web_auteur}}</b></li>
+  </ul>
+
+</p>
+</body>
+
+</html>
