@@ -1,35 +1,56 @@
 <!doctype html>
 <html>
-<title>Recherche</title>
+<head>
+  <title>Recherche</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main_css.css') }}">
+</head>
 
-<header>
-  <h1 style="text-align:center"> Les archives de Babel </h1>
-  <h2 style="text-align:center"> Recherche </h2>
-</header>
+<body>
+  <header>
+    <h1 style="text-align:center"> Les archives de Babel </h1>
+    <h2 style="text-align:center"> Recherche </h2>
+  </header>
 
-<nav style="text-align:center; background-color:LightGray">
-  <a href="accueil">Accueil</a> -
-  <a href="auteur">Auteurs</a> -
-</nav>
+  <nav style="text-align:center; background-color:LightGray">
+    <a href="accueil">Accueil</a> -
+    <a href="auteur">Auteurs</a> 
+  </nav>
 
-<p>
-  Sur quelle critère voulez vous baser votre recherche : 
+  <div class="recherche-wrapper">
+    <div class="recherche-container">
+      <div class="recherche-block">
+        <h3>Critères de recherche</h3>
+        <p>Sur quel critère principal voulez-vous baser votre recherche ?</p>
 
-  <form method="get" action="accueil">
+        <form method="get" action="accueil">
+          <label for="critere">Sélectionner un critère:</label>
+          <select name="critere" id="critere">
+              <option value="">Choisir un critère</option>
+              {% for crit in critere_recherche %}
+              <option value="{{crit}}">{{crit}}</option>
+              {% endfor %}
+          </select>
+        </form>
 
-    <select name="critere">
-        <option value="">Choisir un critère</option>
-        {% for crit in critere_recherche %}
-        <option value="{{crit}}">{{crit}}</option>
-        {% endfor %}
-    </select>
+        <form method="get" action="accueil">
+          <input type="submit" value="Valider" class="search-button">
+        </form>
+      </div>
 
-    <input type="submit" value="Valider">
+      <div class="recherche-block">
+        <p>Affinez votre recherche</p>
+      </div>
+    </div>
 
-  </form>
+    <div class="searchresult-container">
+      <div class="searchresult-block">
+        <h3>Résultats de recherche</h3>
+        <p>Les résultats de votre recherche apparaîtront ici</p> <!-- Si recherche pas faite SINON on remplace par les tendances-->
+      </div>
+    </div>
+  </div>
 
-</p>
 
 
-
+</body>
 </html>
