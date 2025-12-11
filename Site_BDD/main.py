@@ -55,7 +55,7 @@ def info_auteur(idPerso):
             cur.execute(f"SELECT nom, prenom, email, site_web_auteur FROM auteur NATURAL JOIN personne WHERE idPersonne = {idPerso}")
             resultat_auteur = cur.fetchone()
     
-    if resultat_auteur != ():
+    if resultat_auteur != None:
         # Recherche d'info sur les articles de l'auteur
         with db.connect() as conn:
             with conn.cursor() as cur:
@@ -64,8 +64,33 @@ def info_auteur(idPerso):
         return render_template("info_auteur.html", auteur = resultat_auteur, articles = resultat_article)
     
     else:
-        return # Template pour information introuvable
+        return render_template("info_introuvable.html")
 
+@app.route("/article/<int:idArticle>")
+def info_article(idArticle):
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            # Info uniquement avec article
+            cur.execute(f"SELECT site_web_article, nb_page, annee_pub, volume, numero, nom_langue, nom_domaine, nom_revue FROM article NATURAL JOIN langue NATURAL JOIN domaine_article NATURAL JOIN domaine NATURAL JOIN revue  WHERE idArticle = {idArticle}")
+            resultat_article = cur.fetchone()
+
+    if resultat_article != None:
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT idPersonne, site_web_auteur FROM article NATURAL JOIN ecrit NATURAL JOIN auteur NATURAL JOIN personne WHERE idArticle = {idArticle}") 
+                resultat_auteur = cur.fetchmany(5)
+            
+        titre = ""
+        for i in range(4, len(resultat_article.site_web_article), 1):
+            if resultat_article.site_web_article[i] == ".":
+                break
+            else:
+                titre += resultat_article.site_web_article[i]
+
+        return render_template("info_article.html", titre = titre, article = resultat_article, auteurs = resultat_auteur)
+    
+    else:
+        return render_template("info_introuvable.html")
 
 if __name__ == '__main__':
     app.run()
