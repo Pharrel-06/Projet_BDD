@@ -20,14 +20,16 @@
     <div class="recherche-container">
       <div class="recherche-block">
         <h3>Critères de recherche</h3>
-        <form method="get" action="accueil">
-          <select name="critere" id="critere">
-              <option value="">Choisir un critère</option>
-              {% for crit in critere_recherche %}
-              <option value="{{crit}}">{{crit}}</option>
-              {% endfor %}
-          </select>
-          <input type="submit" value="Valider" class="search-button">
+        <form method="post" action="recherche">
+          <fieldset style="border-radius: 8px;">
+            {% for crit in critere_recherche %}
+            <div class="center">
+              <input type="radio" name="critere" id="critere" value="{{crit}}">
+              <label for="critere"> {{crit}} </label>
+            </div>
+            {% endfor %}
+            <input type="submit" value="Valider" class="search-button">
+          </fieldset>
         </form>
       </div>
     </div>
@@ -35,12 +37,20 @@
     <div class="searchresult-container">
       <div class="searchresult-block">
         <h3>Résultats de recherche</h3>
-        <p>Les résultats apparaîtront ici</p>
+        {% if resultat_recherche == None %}
+          <p>Les résultats apparaîtront ici</p>
+        {% elif resultat_recherche != None %}
+          {% for art in resultat_recherche %}
+          <p class="searchresult-articles">
+            <b><i>{{ art.site_web_article[4:-4] }}</i></b><br>
+            {{ art.prenom }} {{ art.nom }}<br>
+            <i>{{ art.annee_pub }}</i>
+          </p>
+          {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>
-
-
 
 </body>
 </html>

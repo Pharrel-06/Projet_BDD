@@ -9,10 +9,32 @@ app = Flask(__name__)
 def accueil():
     return render_template("accueil.html")
 
-@app.route("/recherche")
+@app.route("/recherche", methods=['GET', 'POST'])
 def recherche():
-    critere_recherche = ["auteur", "domaine", "langue", "année publication", "revue", "laboratoire"]
-    return render_template("recherche.html", critere_recherche = critere_recherche)
+    crit_rec = ["auteur", "domaine", "langue", "année publication", "revue", "laboratoire"]
+    chosen_crit = request.form.get("critere") or request.args.get("critere")
+    res_rec = None
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            if chosen_crit == crit_rec[0]: 
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub from article natural join ecrit natural join auteur natural join personne order by nom desc")
+                res_rec = cur.fetchall()
+            elif chosen_crit == crit_rec[1]: 
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, nom_domaine from article natural join ecrit natural join auteur natural join personne natural join domaine_article natural join domaine order by nom_domaine desc")
+                res_rec = cur.fetchall()
+            elif chosen_crit == crit_rec[2]: 
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, nom_langue from article natural join ecrit natural join auteur natural join personne order by nom_langue asc")
+                res_rec = cur.fetchall()
+            elif chosen_crit == crit_rec[3]: 
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub from article natural join ecrit natural join auteur natural join personne order by annee_pub desc")
+                res_rec = cur.fetchall()
+            elif chosen_crit == crit_rec[4]: 
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, idRevue from article natural join ecrit natural join auteur natural join personne order by idRevue asc")
+                res_rec = cur.fetchall()
+            elif chosen_crit == crit_rec[5]:
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, idLaboratoire from article natural join ecrit natural join auteur natural join personne order by idLaboratoire desc")
+                res_rec = cur.fetchall()
+    return render_template("recherche.html", critere_recherche = crit_rec, resultat_recherche = res_rec)
 
 
 # Exemple simple d'affichage des auteurs

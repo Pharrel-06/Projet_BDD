@@ -37,6 +37,13 @@ p {
     margin-bottom: 20px;
 }
 
+.searchresult-articles {
+    border: 10px double rgb(196, 196, 184);
+    border-radius: 25px;
+    padding: 3px;
+    margin: 2px;
+}
+
 /* Stylise les liens */
 a {
     color: #3498db;
@@ -141,7 +148,9 @@ pre {
     flex-direction: column;
     gap: 20px;
 }
-
+.recherche-containerLeft {
+    flex-direction: row
+}
 .recherche-block, .searchresult-block {
     background-color: #fff;
     border: 2px solid #cacab2;
@@ -192,4 +201,27 @@ pre {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+/* Styles pour les critères de recherche - radio buttons */
+.center {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 8px;
+}
+
+.center input[type="radio"] {
+    width: auto;
+    padding: 0;
+    cursor: pointer;
+    margin: 0;
+    accent-color: #026316;
+}
+
+.center label {
+    margin-bottom: 0;
+    cursor: pointer;
+    color: #333;
+    font-size: 14px;
 }
