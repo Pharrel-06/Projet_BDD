@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <title>Information Article</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_css.css') }}">
+</head>
+
+<body>
+    <header>
+  <h1 style="text-align:center"> Les archives de Babel </h1>
+  <h2 style="text-align:center"> Information Article </h2>
+</header>
+
+<nav style="text-align:center; background-color:LightGray">
+  <a href="{{url_for('accueil')}}">Accueil</a> -
+  <a href="auteur">Auteurs</a> -
+</nav>
+
+<p>
+  Vous êtes sur la page de l'article <b><i>{{titre}} </i></b>. 
+  <br>
+  Voici les informations sur cet article :
+
+  <ul>
+    <li>Année de publication : <b>{{article.annee_pub}}</b></li>
+    <li>Nombre de pages : <b>{{article.nb_page}}</b></li>
+    <li>Volume : <b>{{article.volume}}</b></li>
+    <li>Numéro : <b>{{article.numero}}</b></li>
+    <li>Domaine : <b>{{article.nom_domaine}}</b></li>
+    <li>Revue : <b>{{article.nom_revue}}</b></li>
+    <li>nom_langue : <b>{{article.nom_langue}}</b></li>
+  </ul>
+
+  Voici les informations sur les auteurs de l'article :
+
+  <ul>
+    {%for info_auteur in auteurs %}
+    <li><a href="">{{info_auteur.site_web_auteur}}</a></li>
+    {% endfor %}
+  </ul>
+
+
+
+</p>
+</body>
+
+</html>
