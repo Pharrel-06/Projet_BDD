@@ -26,14 +26,14 @@ CREATE TABLE personne(
 
 CREATE TABLE administrateur(
     idAdministrateur int PRIMARY KEY,
-    mot_de_passe varchar(20) NOT NULL,
-    idPersonne serial REFERENCES personne(idPersonne)
+    mot_de_passe varchar(100),
+    idPersonne serial REFERENCES personne(idPersonne) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE auteur(
     email varchar(50) PRIMARY KEY,
     site_web_auteur varchar(50),
-    idPersonne serial REFERENCES personne(idPersonne),
+    idPersonne serial REFERENCES personne(idPersonne) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT Verif_email CHECK (email LIKE '%@%.%'),
     CONSTRAINT Verif_site_web CHECK (site_web_auteur LIKE 'www.%')
 );
@@ -46,7 +46,7 @@ CREATE TABLE comite(
 CREATE TABLE revue(
     idRevue serial PRIMARY KEY,
     nom_revue varchar(50),
-    idComite serial REFERENCES comite(idComite)
+    idComite serial REFERENCES comite(idComite) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE langue(
@@ -55,13 +55,13 @@ CREATE TABLE langue(
 
 CREATE TABLE article(
     idArticle serial PRIMARY KEY,
-    nb_page int default 1 NOT NULL,
-    annee_pub int NOT NULL,
+    nb_page int default 1,
+    annee_pub int,
     site_web_article varchar(50),
-    idRevue serial REFERENCES revue(idRevue),
+    idRevue serial REFERENCES revue(idRevue) ON DELETE SET NULL ON UPDATE CASCADE,
     volume int default 1,
     numero int default 1,
-    nom_langue varchar(25) REFERENCES langue(nom_langue),
+    nom_langue varchar(25) REFERENCES langue(nom_langue) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT nb_page_positive CHECK (nb_page > 0),
     CONSTRAINT annee_pub_valide CHECK (annee_pub BETWEEN 0 AND 2025),
     CONSTRAINT Verif_site_web_article CHECK (site_web_article LIKE 'www.%'),
@@ -82,7 +82,7 @@ CREATE TABLE pays(
 CREATE TABLE ville(
     idVille serial PRIMARY KEY,
     nom_ville varchar(50),
-    idPays serial REFERENCES pays(idPays)
+    idPays serial REFERENCES pays(idPays) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE laboratoire(
@@ -91,35 +91,35 @@ CREATE TABLE laboratoire(
     adresse varchar(50),
     site_web_laboratoire varchar(50),
     type varchar(50),
-    idVille serial REFERENCES ville(idVille),
+    idVille serial REFERENCES ville(idVille) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT Verif_site_web_laboratoire CHECK (site_web_laboratoire LIKE 'www.%')
 );
 
 /* Création des tables pour les associations */
 
 CREATE TABLE comite_auteur(
-    email varchar(50) REFERENCES auteur(email),
-    idComite serial REFERENCES comite(idComite),
+    email varchar(50) REFERENCES auteur(email) ON DELETE SET NULL ON UPDATE CASCADE,
+    idComite serial REFERENCES comite(idComite) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT Comite_AuteurPK PRIMARY KEY (email, idComite),
     CONSTRAINT Verif_email_comite_auteur CHECK (email LIKE '%@%.%')
 );
 
 CREATE TABLE domaine_article(
-    idDomaine serial REFERENCES domaine(idDomaine),
-    idArticle serial REFERENCES article(idArticle),
+    idDomaine serial REFERENCES domaine(idDomaine) ON DELETE SET NULL ON UPDATE CASCADE,
+    idArticle serial REFERENCES article(idArticle) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT Domaine_ArticlePK PRIMARY KEY (idDomaine, idArticle)
 );
 
 CREATE TABLE cite(
-    idArticle_biblio serial REFERENCES article(idArticle),
-    idArticle_cite serial REFERENCES article(idArticle),
+    idArticle_biblio serial REFERENCES article(idArticle) ON UPDATE CASCADE,
+    idArticle_cite serial REFERENCES article(idArticle) ON UPDATE CASCADE,
     CONSTRAINT CitePK PRIMARY KEY (idArticle_biblio, idArticle_cite)
 );
 
 CREATE TABLE ecrit(
-    email varchar(50) REFERENCES auteur(email),
-    idArticle serial REFERENCES article(idArticle),
-    idLaboratoire serial REFERENCES laboratoire(idLaboratoire),
+    email varchar(50) REFERENCES auteur(email) ON DELETE SET NULL ON UPDATE CASCADE,
+    idArticle serial REFERENCES article(idArticle) ON DELETE SET NULL ON UPDATE CASCADE,
+    idLaboratoire serial REFERENCES laboratoire(idLaboratoire) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT EcritPK PRIMARY KEY (email, idArticle, idLaboratoire),
     CONSTRAINT Verif_email_ecrit CHECK (email LIKE '%@%.%')
 );
@@ -158,8 +158,8 @@ CREATE VIEW auteur_affluant AS
 
 
 /* Insertion des données dans les tables */
-INSERT INTO personne (nom, prenom) VALUES
-('FLeuranvil', 'Pharrel'),
+INSERT INTO personne(nom, prenom) VALUES
+('Fleuranvil', 'Pharrel'),
 ('Abrial', 'Tom'),
 ('Francis', 'Nadime'),
 ('Brenchemmacher', 'Alexandre'),

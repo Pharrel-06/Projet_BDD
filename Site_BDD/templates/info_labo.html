@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
 <head>
-    <title>Information Article</title>
+    <title>Information Laboratoire</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main_css.css') }}">
 </head>
 
 <body>
     <header>
   <h1 style="text-align:center"> Les archives de Babel </h1>
-  <h2 style="text-align:center"> Information Article </h2>
+  <h2 style="text-align:center"> Information Laboratoire </h2>
 </header>
 
 <nav style="text-align:center; background-color:LightGray">
@@ -21,21 +21,18 @@
 </nav>
 
 <p>
-  Vous êtes sur la page de l'article <b><i>{{titre}} </i></b>. 
+  Vous êtes sur la page du laboratoire <b><i>{{labo.nom_laboiratoire}} </i></b>. 
   <br>
-  Voici les informations sur cet article :
+  Voici les informations sur ce laboratoire :
 
   <ul>
-    <li>Année de publication : <b>{{article.annee_pub}}</b></li>
-    <li>Nombre de pages : <b>{{article.nb_page}}</b></li>
-    <li>Volume : <b>{{article.volume}}</b></li>
-    <li>Numéro : <b>{{article.numero}}</b></li>
-    <li>Domaine : <b>{{article.nom_domaine}}</b></li>
-    <li>Revue : <b><a href="{{url_for('info_revue', idRevue=article.idrevue)}}">{{article.nom_revue}}</a></b></li>
-    <li>Langue : <b>{{article.nom_langue}}</b></li>
+    <li>Adresse : <b>{{labo.adresse}}</b></li>
+    <li>Type d'établissement : <b>{{labo.type}}</b></li>
+    <li>Ville : <b>{{labo.nom_ville}}</b></li>
+    <li>Pays : <b>{{labo.nom_pays}}</b></li>
   </ul>
 
-  Voici les informations sur les auteurs de l'article :
+  Voici les auteurs qui ont écrit un article dans le laboratoire :
 
   <ul>
     {%for info in auteurs %}
@@ -43,7 +40,13 @@
     {% endfor %}
   </ul>
 
+  Voici les articles qui ont été écrit dans le laboratoire :
 
+  <ul>
+    {%for info in articles %}
+    <li><a href="{{url_for('info_article', idArticle=info.idarticle)}}">{{info.site_web_article}}</a></li>
+    {% endfor %}
+  </ul>
 
 </p>
 </body>

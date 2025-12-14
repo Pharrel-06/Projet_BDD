@@ -1,14 +1,14 @@
 <!doctype html>
 <html>
 <head>
-    <title>Information Introuvable</title>
+    <title>Information Revue</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main_css.css') }}">
 </head>
 
 <body>
     <header>
   <h1 style="text-align:center"> Les archives de Babel </h1>
-  <h2 style="text-align:center"> Information Introuvable </h2>
+  <h2 style="text-align:center"> Information Revue </h2>
 </header>
 
 <nav style="text-align:center; background-color:LightGray">
@@ -21,7 +21,17 @@
 </nav>
 
 <p>
-  Les informations que vous chercher sont <b>introuvable</b>. Veuillez essayer à nouveau.
+  Vous êtes sur la page de la revue <b><i>{{revue.nom_revue}} </i></b>. 
+  Elle est géré par le comité suivant : <b><a href="{{url_for('info_comite', idComite=revue.idcomite)}}">{{revue.nom_comite}}</a></b>
+  <br>
+  Voici les articles qui appartiennent à la revue :
+
+  <ul>
+    {% for info in articles %}
+    <li><a href="{{url_for('info_article', idArticle=info.idarticle)}}">{{info.site_web_article}}</a></li>
+    {% endfor %}
+  </ul>
+
 </p>
 </body>
 

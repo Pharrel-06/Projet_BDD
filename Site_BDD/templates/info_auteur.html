@@ -13,7 +13,11 @@
 
 <nav style="text-align:center; background-color:LightGray">
   <a href="{{url_for('accueil')}}">Accueil</a> -
-  <a href="auteur">Auteurs</a> -
+  <a href="{{url_for('auteur')}}">Auteurs</a> -
+  <a href="{{url_for('revue')}}">Revues</a> -
+  <a href="{{url_for('comite')}}">Comités</a> -
+  <a href="{{url_for('labo')}}">Laboratoires</a> -
+  <a href="{{url_for('recherche')}}">Recherche</a>
 </nav>
 
 <p>
@@ -22,8 +26,17 @@
   Voici quelques références d'articles sur lequelles il a participé :
 
   <ul>
-    {% for info_article in articles %}
-    <li><a href="info_article/{{info_article.idArticle}}">{{info_article.site_web_article}}</a> sortie en {{info_article.annee_pub}} </li>
+    {% for info in articles %}
+    <li><a href="{{url_for('info_article', idArticle=info.idarticle)}}">{{info.site_web_article}}</a> sortie en {{info.annee_pub}} </li>
+    {% endfor %}
+  </ul>
+
+  <br>
+  Voici les comité auquel il appartient :
+
+  <ul>
+    {% for info in comites %}
+    <li><a href="{{url_for('info_comite', idComite=info.idcomite)}}">{{info.nom_comite}}</a></li>
     {% endfor %}
   </ul>
 

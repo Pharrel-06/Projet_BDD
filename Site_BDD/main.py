@@ -47,21 +47,27 @@ def auteur():
 
     return render_template("auteur.html", lst_auteur = resultat)
 
-@app.route("/auteur/<int:idPerso>")
-def info_auteur(idPerso):
+@app.route("/auteur/<int:idPersonne>")
+def info_auteur(idPersonne):
     # Vérification de l'idPersonne
     with db.connect() as conn:
         with conn.cursor() as cur:
-            cur.execute(f"SELECT nom, prenom, email, site_web_auteur FROM auteur NATURAL JOIN personne WHERE idPersonne = {idPerso}")
+            cur.execute(f"SELECT nom, prenom, email, site_web_auteur FROM auteur NATURAL JOIN personne WHERE idPersonne = {idPersonne}")
             resultat_auteur = cur.fetchone()
     
     if resultat_auteur != None:
         # Recherche d'info sur les articles de l'auteur
         with db.connect() as conn:
             with conn.cursor() as cur:
-                cur.execute(f"SELECT idArticle, annee_pub, site_web_article FROM auteur NATURAL JOIN ecrit NATURAL JOIN article WHERE idPersonne = {idPerso} ORDER BY annee_pub DESC")
+                cur.execute(f"SELECT idArticle, annee_pub, site_web_article FROM auteur NATURAL JOIN ecrit NATURAL JOIN article WHERE idPersonne = {idPersonne} ORDER BY annee_pub DESC")
                 resultat_article = cur.fetchmany(5)
-        return render_template("info_auteur.html", auteur = resultat_auteur, articles = resultat_article)
+        
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT idComite, nom_comite FROM auteur NATURAL JOIN comite_auteur NATURAL JOIN comite WHERE idPersonne = {idPersonne}")
+                resultat_comite = cur.fetchmany(5)
+
+        return render_template("info_auteur.html", auteur = resultat_auteur, articles = resultat_article, comites = resultat_comite)
     
     else:
         return render_template("info_introuvable.html")
@@ -71,7 +77,7 @@ def info_article(idArticle):
     with db.connect() as conn:
         with conn.cursor() as cur:
             # Info uniquement avec article
-            cur.execute(f"SELECT site_web_article, nb_page, annee_pub, volume, numero, nom_langue, nom_domaine, nom_revue FROM article NATURAL JOIN langue NATURAL JOIN domaine_article NATURAL JOIN domaine NATURAL JOIN revue  WHERE idArticle = {idArticle}")
+            cur.execute(f"SELECT site_web_article, nb_page, annee_pub, volume, numero, nom_langue, nom_domaine, idRevue, nom_revue FROM article NATURAL JOIN langue NATURAL JOIN domaine_article NATURAL JOIN domaine NATURAL JOIN revue  WHERE idArticle = {idArticle}")
             resultat_article = cur.fetchone()
 
     if resultat_article != None:
@@ -88,6 +94,96 @@ def info_article(idArticle):
                 titre += resultat_article.site_web_article[i]
 
         return render_template("info_article.html", titre = titre, article = resultat_article, auteurs = resultat_auteur)
+    
+    else:
+        return render_template("info_introuvable.html")
+
+@app.route("/revue")
+def revue():
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM revue NATURAL JOIN comite")
+            resultat_revues = cur.fetchall()
+    return render_template("revue.html", lst_revue = resultat_revues)
+
+@app.route("/revue/<int:idRevue>")
+def info_revue(idRevue):
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            # Info uniquement avec article
+            cur.execute(f"SELECT nom_revue, idComite, nom_comite FROM revue NATURAL JOIN comite WHERE idRevue = {idRevue}")
+            resultat_revue = cur.fetchone()
+
+    if resultat_revue != None:
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT idArticle, site_web_article FROM article WHERE idRevue = {idRevue}") 
+                resultat_article = cur.fetchall()
+        
+        return render_template("info_revue.html", revue = resultat_revue, articles = resultat_article)
+    
+    else:
+        return render_template("info_introuvable.html")
+
+@app.route("/comite")
+def comite():
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM comite")
+            resultat_comites = cur.fetchall()
+    return render_template("comite.html", lst_comite = resultat_comites)
+
+@app.route("/comite/<int:idComite>")
+def info_comite(idComite):
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            # Info uniquement avec article
+            cur.execute(f"SELECT idComite, nom_comite FROM comite WHERE idComite = {idComite}")
+            resultat_comite = cur.fetchone()
+
+    if resultat_comite != None:
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT idPersonne, nom, prenom FROM comite_auteur NATURAL JOIN auteur NATURAL JOIN personne WHERE idComite = {idComite}") 
+                resultat_membre = cur.fetchall()
+        
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT idRevue, nom_revue FROM comite NATURAL JOIN revue WHERE idComite = {idComite}") 
+                resultat_revue = cur.fetchall()
+        
+        return render_template("info_comite.html", comite = resultat_comite, membres = resultat_membre, revues = resultat_revue)
+    
+    else:
+        return render_template("info_introuvable.html")
+
+@app.route("/labo")
+def labo():
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM laboratoire NATURAL JOIN ville NATURAL JOIN pays")
+            resultat_labos = cur.fetchall()
+    return render_template("labo.html", lst_labos = resultat_labos)
+
+@app.route("/labo/<int:idLaboratoire>")
+def info_labo(idLaboratoire):
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT * FROM laboratoire NATURAL JOIN ville NATURAL JOIN pays WHERE idLaboratoire = {idLaboratoire}")
+            resultat_labo = cur.fetchone()
+
+    if resultat_labo != None:
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT DISTINCT idPersonne, nom, prenom, site_web_auteur FROM ecrit NATURAL JOIN auteur NATURAL JOIN personne WHERE idLaboratoire = {idLaboratoire}") 
+                resultat_auteur = cur.fetchall()
+        
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT idArticle, site_web_article FROM ecrit NATURAL JOIN article WHERE idLaboratoire = {idLaboratoire}") 
+                resultat_article = cur.fetchall()
+        
+        return render_template("info_labo.html", labo = resultat_labo, auteurs = resultat_auteur, articles = resultat_article)
     
     else:
         return render_template("info_introuvable.html")
