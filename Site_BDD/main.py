@@ -3,6 +3,18 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import db
 import psycopg2
 
+def creation_titre(chaine):
+        titre = ""
+        for i in range(4, len(chaine), 1):
+            if i == 4:
+                titre += chaine[i].upper()
+                continue
+            if chaine[i] == ".": break
+            else:
+                if chaine[i] == "-": titre += " "
+                else: titre += chaine[i]
+        return titre
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -21,23 +33,26 @@ def recherche():
     with db.connect() as conn:
         with conn.cursor() as cur:
             if chosen_crit == crit_rec[0]: 
-                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub from article natural join ecrit natural join auteur natural join personne order by nom desc")
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub from article natural join ecrit natural join auteur natural join personne order by nom desc limit 20")
                 res_rec = cur.fetchall()
             elif chosen_crit == crit_rec[1]: 
-                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, nom_domaine from article natural join ecrit natural join auteur natural join personne natural join domaine_article natural join domaine order by nom_domaine desc")
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, nom_domaine from article natural join ecrit natural join auteur natural join personne natural join domaine_article natural join domaine order by nom_domaine desc limit 20")
                 res_rec = cur.fetchall()
             elif chosen_crit == crit_rec[2]: 
-                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, nom_langue from article natural join ecrit natural join auteur natural join personne order by nom_langue asc")
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, nom_langue from article natural join ecrit natural join auteur natural join personne order by nom_langue asc limit 20")
                 res_rec = cur.fetchall()
             elif chosen_crit == crit_rec[3]: 
-                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub from article natural join ecrit natural join auteur natural join personne order by annee_pub desc")
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub from article natural join ecrit natural join auteur natural join personne order by annee_pub desc limit 20")
                 res_rec = cur.fetchall()
             elif chosen_crit == crit_rec[4]: 
-                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, idRevue from article natural join ecrit natural join auteur natural join personne order by idRevue asc")
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, idRevue from article natural join ecrit natural join auteur natural join personne order by idRevue asc limit 20")
                 res_rec = cur.fetchall()
             elif chosen_crit == crit_rec[5]:
-                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, idLaboratoire from article natural join ecrit natural join auteur natural join personne order by idLaboratoire desc")
+                cur.execute("select idArticle, site_web_article, nom, prenom, annee_pub, idLaboratoire from article natural join ecrit natural join auteur natural join personne order by idLaboratoire desc limit 20")
                 res_rec = cur.fetchall()
+    if res_rec != None:
+        titres = [creation_titre(res_rec[i].site_web_article) for i in range(len(res_rec))]
+        res_rec = zip(res_rec, titres)
     return render_template("recherche.html", critere_recherche = crit_rec, resultat_recherche = res_rec)
 
 
@@ -89,14 +104,7 @@ def info_article(idArticle):
             with conn.cursor() as cur:
                 cur.execute(f"SELECT idPersonne, site_web_auteur FROM article NATURAL JOIN ecrit NATURAL JOIN auteur NATURAL JOIN personne WHERE idArticle = {idArticle}") 
                 resultat_auteur = cur.fetchmany(5)
-            
-        titre = ""
-        for i in range(4, len(resultat_article.site_web_article), 1):
-            if resultat_article.site_web_article[i] == ".":
-                break
-            else:
-                titre += resultat_article.site_web_article[i]
-
+        titre = creation_titre(resultat_article.site_web_article)
         return render_template("info_article.html", titre = titre, article = resultat_article, auteurs = resultat_auteur)
     
     else:
