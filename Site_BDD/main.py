@@ -5,6 +5,10 @@ import psycopg2
 
 app = Flask(__name__)
 
+@app.route("/")
+def default():
+    return redirect(url_for('accueil'))
+
 @app.route("/accueil")
 def accueil():
     return render_template("accueil.html")
