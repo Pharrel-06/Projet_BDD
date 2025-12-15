@@ -219,7 +219,27 @@ INSERT INTO article (nb_page, annee_pub, site_web_article, idRevue, volume, nume
 (22, 2010, 'www.sport-automobile.com', 4, 5, 4, 'Français'),
 (19, 2024, 'www.sport-et-santé.com', 6, 4, 2, 'Français'),
 (21, 2018, 'www.santé-alimentation.com', 6, 3, 3, 'Français'),
-(17, 2017, 'www.satellite.com', 5, 2, 2, 'Anglais'); --20
+(17, 2017, 'www.satellite.com', 5, 2, 2, 'Anglais'), --20
+(25, 2019, 'www.ia-neuronale.com', 2, 3, 2, 'Anglais'),
+(14, 2023, 'www.robotique-industrielle.com', 4, 6, 4, 'Français'),
+(11, 2021, 'www.blockchain-crypto.com', 5, 5, 1, 'Anglais'),
+(8, 2022, 'www.cyber-securite.com', 1, 7, 2, 'Français'),
+(19, 2020, 'www.cloud-computing.com', 2, 4, 3, 'Anglais'), --25
+(12, 2018, 'www.biomedical-imaging.com', 6, 2, 1, 'Anglais'),
+(23, 2019, 'www.nanotechnologie.com', 4, 8, 2, 'Français'),
+(16, 2021, 'www.energie-renouvelable.com', 5, 6, 3, 'Anglais'),
+(10, 2017, 'www.chimie-organique.com', 1, 3, 4, 'Français'),
+(20, 2023, 'www.neuroscience-computationnelle.com', 6, 5, 2, 'Anglais'), --30
+(15, 2024, 'www.optique-quantique.com', 4, 9, 1, 'Français'),
+(9, 2016, 'www.bioinformatique.com', 2, 5, 2, 'Anglais'),
+(18, 2022, 'www.realite-augmentee.com', 5, 7, 3, 'Français'),
+(13, 2019, 'www.materiaux-composites.com', 1, 4, 1, 'Anglais'),
+(24, 2020, 'www.analyse-donnees.com', 3, 2, 4, 'Français'), --35
+(11, 2023, 'www.agriculture-precision.com', 6, 6, 2, 'Anglais'),
+(17, 2021, 'www.geomatique-cartographie.com', 2, 3, 1, 'Français'),
+(22, 2024, 'www.architecture-logicielle.com', 5, 8, 4, 'Anglais'),
+(7, 2018, 'www.methodes-formelles.com', 1, 5, 3, 'Français'),
+(19, 2022, 'www.psychologie-cognitive.com', 6, 4, 3, 'Anglais'); --40
 
 INSERT INTO domaine (nom_domaine) VALUES
 ('Informatique'),
@@ -300,7 +320,35 @@ INSERT INTO domaine_article (idDomaine, idArticle) VALUES
 (6, 19),
 (1, 20),
 (2, 20),
-(4, 20);
+(4, 20),
+(1, 21),
+(2, 21),
+(1, 22),
+(2, 22),
+(1, 23),
+(3, 24),
+(1, 25),
+(2, 25),
+(6, 26),
+(2, 27),
+(4, 28),
+(1, 29),
+(3, 29),
+(4, 30),
+(6, 30),
+(4, 31),
+(1, 32),
+(2, 33),
+(1, 34),
+(3, 34),
+(2, 35),
+(6, 36),
+(3, 37),
+(1, 38),
+(2, 38),
+(6, 39),
+(1, 40),
+(3, 40);
 
 INSERT INTO cite (idArticle_biblio, idArticle_cite) VALUES
 (2, 1),
@@ -333,7 +381,27 @@ INSERT INTO ecrit (email, idArticle, idLaboratoire) VALUES
 ('Sengphrachanh@gmail.com',   17, 5),
 ('Sengphrachanh@gmail.com',   18, 5),
 ('Sengphrachanh@gmail.com',   19, 5),
-('Abrial@gmail.com',          20, 6);
+('Abrial@gmail.com',          20, 6),
+('Fleuranvil@gmail.com',      21, 2),
+('Francis@gmail.com',         22, 1),
+('BenMalek@gmail.com',        23, 3),
+('Nanthagobal@gmail.com',     24, 2),
+('Brenchenmmacher@gmail.com', 25, 5),
+('Lariviere@gmail.com',       26, 4),
+('Sengphrachanh@gmail.com',   27, 5),
+('Abrial@gmail.com',          28, 6),
+('Francis@gmail.com',         29, 1),
+('Fleuranvil@gmail.com',      30, 2),
+('BenMalek@gmail.com',        31, 3),
+('Nanthagobal@gmail.com',     32, 2),
+('Brenchenmmacher@gmail.com', 33, 4),
+('Lariviere@gmail.com',       34, 6),
+('Sengphrachanh@gmail.com',   35, 5),
+('Abrial@gmail.com',          36, 6),
+('Francis@gmail.com',         37, 1),
+('Fleuranvil@gmail.com',      38, 2),
+('BenMalek@gmail.com',        39, 3),
+('Nanthagobal@gmail.com',     40, 2);
 
 -- Fin du dump de la base donnée --
 
