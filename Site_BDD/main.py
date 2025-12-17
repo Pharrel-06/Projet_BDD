@@ -54,8 +54,6 @@ def recherche():
         res_rec = zip(res_rec, titres)
     return render_template("recherche.html", critere_recherche = crit_rec, resultat_recherche = res_rec)
 
-
-# Exemple simple d'affichage des auteurs
 @app.route("/auteur")
 def auteur():
     with db.connect() as conn:
@@ -67,14 +65,12 @@ def auteur():
 
 @app.route("/auteur/<int:idPersonne>")
 def info_auteur(idPersonne):
-    # Vérification de l'idPersonne
     with db.connect() as conn:
         with conn.cursor() as cur:
             cur.execute(f"SELECT nom, prenom, email, site_web_auteur FROM auteur NATURAL JOIN personne WHERE idPersonne = {idPersonne}")
             resultat_auteur = cur.fetchone()
     
     if resultat_auteur != None:
-        # Recherche d'info sur les articles de l'auteur
         with db.connect() as conn:
             with conn.cursor() as cur:
                 cur.execute(f"SELECT idArticle, annee_pub, site_web_article FROM auteur NATURAL JOIN ecrit NATURAL JOIN article WHERE idPersonne = {idPersonne} ORDER BY annee_pub DESC")
@@ -94,7 +90,6 @@ def info_auteur(idPersonne):
 def info_article(idArticle):
     with db.connect() as conn:
         with conn.cursor() as cur:
-            # Info uniquement avec article
             cur.execute(f"SELECT site_web_article, nb_page, annee_pub, volume, numero, nom_langue, nom_domaine, idRevue, nom_revue FROM article NATURAL JOIN langue NATURAL JOIN domaine_article NATURAL JOIN domaine NATURAL JOIN revue  WHERE idArticle = {idArticle}")
             resultat_article = cur.fetchone()
 
@@ -121,7 +116,6 @@ def revue():
 def info_revue(idRevue):
     with db.connect() as conn:
         with conn.cursor() as cur:
-            # Info uniquement avec article
             cur.execute(f"SELECT nom_revue, idComite, nom_comite FROM revue NATURAL JOIN comite WHERE idRevue = {idRevue}")
             resultat_revue = cur.fetchone()
 
@@ -148,7 +142,6 @@ def comite():
 def info_comite(idComite):
     with db.connect() as conn:
         with conn.cursor() as cur:
-            # Info uniquement avec article
             cur.execute(f"SELECT idComite, nom_comite FROM comite WHERE idComite = {idComite}")
             resultat_comite = cur.fetchone()
 
@@ -223,7 +216,6 @@ def admin_action():
     action = request.form.get("action")
     table = request.form.get("table")
     message = ""
-    
     try:
         with db.connect() as conn:
             with conn.cursor() as cur:
@@ -232,48 +224,46 @@ def admin_action():
                 
                 if action == "ajouter":
                     donnees = request.form.get("donnees", "").strip()
-                    colonnes = []
-                    valeurs = []
+                    colonnes, valeurs = [], []
                     for pair in donnees.split(","):
                         col, val = pair.split("=")
                         colonnes.append(col.strip())
-                        valeurs.append(f"'{val.strip()}'")
-                    
-                    requete = f"insert into {table} ({', '.join(colonnes)}) values ({', '.join(valeurs)})"
-                    cur.execute(requete)
+                        valeurs.append(val.strip())
+                    placeholders = ", ".join(["%s"] * len(valeurs))
+                    requete = f"INSERT INTO {table} ({', '.join(colonnes)}) VALUES ({placeholders})"
+                    cur.execute(requete, valeurs)
                     conn.commit()
-                    message = f"✓ Element {', '.join(valeurs)} des colonnes {', '.join(colonnes)}  ajouté dans la table {table}"
-                
+                    message = f"✓ Élément ajouté dans la table {table}"
+
                 elif action == "supprimer":
                     elem_id = request.form.get("id")
-                    cur.execute(f"select * from {table} where {prim_key_table} = {elem_id}")
+                    cur.execute(f"SELECT * FROM {table} WHERE {prim_key_table} = %s", (elem_id,))
                     if cur.fetchone():
-                        cur.execute(f"delete from {table} where {prim_key_table} = {elem_id}")
+                        cur.execute(f"DELETE FROM {table} WHERE {prim_key_table} = %s", (elem_id,))
                         conn.commit()
-                        message = f"✓ Element {elem_id} supprimer de la table {table}"
+                        message = f"✓ Élément {elem_id} supprimé de la table {table}"
                     else:
-                        message = f"✗ Element {elem_id} inexistant"
-                
+                        message = f"✗ Élément {elem_id} inexistant"
+
                 elif action == "modifier":
                     elem_id = request.form.get("id")
                     donnees = request.form.get("donnees", "").strip()
-                    cur.execute(f"select * from {table} where {prim_key_table} = {elem_id}")
+                    cur.execute(f"SELECT * FROM {table} WHERE {prim_key_table} = %s", (elem_id,))
                     if cur.fetchone():
-                        updates = []
+                        updates, valeurs = [], []
                         for pair in donnees.split(","):
                             col, val = pair.split("=")
-                            updates.append(f"{col.strip()} = '{val.strip()}'")
-                        
-                        requete = f"update {table} set {', '.join(updates)} where {prim_key_table} = {elem_id}"
-                        cur.execute(requete)
+                            updates.append(f"{col.strip()} = %s")
+                            valeurs.append(val.strip())
+                        valeurs.append(elem_id)
+                        requete = (f"UPDATE {table} SET {', '.join(updates)} " f"WHERE {prim_key_table} = %s")
+                        cur.execute(requete, valeurs)
                         conn.commit()
-                        message = f"✓ Element {', '.join(updates)} modifier dans la table {table}"
+                        message = f"✓ Élément modifié dans la table {table}"
                     else:
-                        message = f"✗ Element {', '.join(updates)} inexistant"
-    
+                        message = f"✗ Élément inexistant"
     except:
         message = f"✗ Erreur: Je sais pas ou mais il y a un probleme quelque part."
-    
     return render_template("page_administrateur.html", message=message)
 
 if __name__ == '__main__':
