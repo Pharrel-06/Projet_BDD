@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <title>Administrateur</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main_css.css') }}">
+</head>
+
+<body>
+<header>
+  <h1 style="text-align:center"> Les archives de Babel </h1>
+  <h2 style="text-align:center"> Acces administrateur </h2>
+</header>
+
+<nav style="text-align:center; background-color:LightGray">
+    <a href="{{url_for('accueil')}}">Accueil</a> -
+    <a href="{{url_for('revue')}}">Revues</a> -
+    <a href="{{url_for('comite')}}">Comités</a> -
+    <a href="{{url_for('labo')}}">Laboratoires</a> -
+    <a href="{{url_for('recherche')}}">Recherche</a>
+</nav>
+
+<p>Veuillez entrer le mot de passe:</p><br>
+<p>
+    <form method="post" action="/page_administrateur">
+        <input type="password" id="mdp" name="mdp"></input> <input type="submit" value="Valider">
+    </form>
+</p>
+
+</body>
+</html>

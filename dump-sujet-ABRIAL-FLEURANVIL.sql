@@ -168,8 +168,8 @@ INSERT INTO personne(nom, prenom) VALUES
 ('Larivière', 'Mathéo'),
 ('Nanthagobal', 'Iraijalagan');
 
-INSERT INTO administrateur (idAdministrateur, mot_de_passe, idPersonne) VALUES
-(1, 'adminpass1', 1);
+INSERT INTO administrateur  VALUES
+(1, '$pbkdf2-sha256$29000$3XvPOYeQsjam9N67N8Y4Jw$v8yFtZ55SpQdj5Rv8MCW3.Su1AVxemGXePjZplmcGxs', 2); -- mdp = "motdepasse"
 
 INSERT INTO auteur (email, site_web_auteur, idPersonne) VALUES
 ('Fleuranvil@gmail.com', 'www.fleuranvil.com', 1),
@@ -404,4 +404,3 @@ INSERT INTO ecrit (email, idArticle, idLaboratoire) VALUES
 ('Nanthagobal@gmail.com',     40, 2);
 
 -- Fin du dump de la base donnée --
-

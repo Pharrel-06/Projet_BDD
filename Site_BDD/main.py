@@ -1,7 +1,6 @@
-import random
 from flask import Flask, render_template, request, redirect, url_for, session
+from passlib.context import CryptContext
 import db
-import psycopg2
 
 def creation_titre(chaine):
         titre = ""
@@ -199,6 +198,83 @@ def info_labo(idLaboratoire):
     
     else:
         return render_template("info_introuvable.html")
+
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
+
+@app.route("/page_administrateur", methods = ["POST"])
+def page_administrateur():
+    from passlib.context import CryptContext
+    password_ctx = CryptContext(schemes=["pbkdf2_sha256"])
+
+    mdp = request.form.get("mdp")
+    with db.connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute(f"select mot_de_passe FROM administrateur LIMIT 1")
+            hash_pw = cur.fetchone()
+
+    if (password_ctx.verify(mdp, hash_pw.mot_de_passe)):
+        return render_template("page_administrateur.html")
+    return redirect(url_for('admin'))
+
+@app.route("/admin_action", methods = ["POST"])
+def admin_action():
+    action = request.form.get("action")
+    table = request.form.get("table")
+    message = ""
+    
+    try:
+        with db.connect() as conn:
+            with conn.cursor() as cur:
+                prim_key = {'auteur': 'idPersonne', 'article': 'idArticle', 'revue': 'idRevue', 'comite': 'idComite', 'laboratoire': 'idLaboratoire', 'ville': 'idVille', 'pays': 'idPays', 'domaine': 'idDomaine', 'langue': 'idLangue'}
+                prim_key_table = prim_key.get(table)
+                
+                if action == "ajouter":
+                    donnees = request.form.get("donnees", "").strip()
+                    colonnes = []
+                    valeurs = []
+                    for pair in donnees.split(","):
+                        col, val = pair.split("=")
+                        colonnes.append(col.strip())
+                        valeurs.append(f"'{val.strip()}'")
+                    
+                    requete = f"insert into {table} ({', '.join(colonnes)}) values ({', '.join(valeurs)})"
+                    cur.execute(requete)
+                    conn.commit()
+                    message = f"✓ Element {', '.join(valeurs)} des colonnes {', '.join(colonnes)}  ajouté dans la table {table}"
+                
+                elif action == "supprimer":
+                    elem_id = request.form.get("id")
+                    cur.execute(f"select * from {table} where {prim_key_table} = {elem_id}")
+                    if cur.fetchone():
+                        cur.execute(f"delete from {table} where {prim_key_table} = {elem_id}")
+                        conn.commit()
+                        message = f"✓ Element {elem_id} supprimer de la table {table}"
+                    else:
+                        message = f"✗ Element {elem_id} inexistant"
+                
+                elif action == "modifier":
+                    elem_id = request.form.get("id")
+                    donnees = request.form.get("donnees", "").strip()
+                    cur.execute(f"select * from {table} where {prim_key_table} = {elem_id}")
+                    if cur.fetchone():
+                        updates = []
+                        for pair in donnees.split(","):
+                            col, val = pair.split("=")
+                            updates.append(f"{col.strip()} = '{val.strip()}'")
+                        
+                        requete = f"update {table} set {', '.join(updates)} where {prim_key_table} = {elem_id}"
+                        cur.execute(requete)
+                        conn.commit()
+                        message = f"✓ Element {', '.join(updates)} modifier dans la table {table}"
+                    else:
+                        message = f"✗ Element {', '.join(updates)} inexistant"
+    
+    except:
+        message = f"✗ Erreur: Je sais pas ou mais il y a un probleme quelque part."
+    
+    return render_template("page_administrateur.html", message=message)
 
 if __name__ == '__main__':
     app.run()

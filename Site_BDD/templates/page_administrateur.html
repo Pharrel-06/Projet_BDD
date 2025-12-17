@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+  <title>Administrateur</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main_css.css') }}">
+</head>
+
+<body>
+<header>
+  <h1 style="text-align:center"> Les archives de Babel </h1>
+  <h2 style="text-align:center"> Page admin hyper secrete de modification de base de donnnee</h2>
+</header>
+
+<nav style="text-align:center; background-color:LightGray">
+    <a href="{{url_for('accueil')}}">Accueil</a> -
+    <a href="{{url_for('revue')}}">Revues</a> -
+    <a href="{{url_for('comite')}}">Comités</a> -
+    <a href="{{url_for('labo')}}">Laboratoires</a> -
+    <a href="{{url_for('recherche')}}">Recherche</a> 
+</nav>
+
+<div class="recherche-wrapper">
+    <div class="recherche-container">
+      <div class="recherche-block">
+        <h3>Ajouter un élément</h3>
+        <form method="post" action="/admin_action">
+          <input type="hidden" name="action" value="ajouter">
+          
+          <label><b>Table:</b></label>
+          <select name="table" required style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px;">
+            <option value="">-- Sélectionner --</option>
+            <option value="auteur">Auteur</option>
+            <option value="article">Article</option>
+            <option value="revue">Revue</option>
+            <option value="comite">Comité</option>
+            <option value="laboratoire">Laboratoire</option>
+            <option value="ville">Ville</option>
+            <option value="pays">Pays</option>
+            <option value="domaine">Domaine</option>
+            <option value="langue">Langue</option>
+          </select>
+          
+          <label><b>Données:</b><br><small>(format: colonne1=valeur1, colonne2=valeur2...)</small></label>
+          <textarea name="donnees" required placeholder="Ex: nom=Dupont, prenom=Jean, email=jean@email.com" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; min-height: 80px; font-family: Arial, sans-serif;"></textarea>
+          
+          <input type="submit" value="Ajouter" class="search-button">
+        </form>
+      </div>
+
+      <div class="recherche-block" style="margin-top: 20px;">
+        <h3>Supprimer un élément</h3>
+        <form method="post" action="/admin_action">
+          <input type="hidden" name="action" value="supprimer">
+          
+          <label><b>Table:</b></label>
+          <select name="table" required style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px;">
+            <option value="">-- Sélectionner --</option>
+            <option value="auteur">Auteur</option>
+            <option value="article">Article</option>
+            <option value="revue">Revue</option>
+            <option value="comite">Comité</option>
+            <option value="laboratoire">Laboratoire</option>
+            <option value="ville">Ville</option>
+            <option value="pays">Pays</option>
+            <option value="domaine">Domaine</option>
+            <option value="langue">Langue</option>
+          </select>
+          
+          <label><b>ID à supprimer:</b></label>
+          <input type="text" name="id" required placeholder="Ex: 5" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px;">
+          
+          <input type="submit" value="Supprimer" class="search-button">
+        </form>
+      </div>
+
+      <div class="recherche-block" style="margin-top: 20px;">
+        <h3>Modifier un élément</h3>
+        <form method="post" action="/admin_action">
+          <input type="hidden" name="action" value="modifier">
+          
+          <label><b>Table:</b></label>
+          <select name="table" required style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px;">
+            <option value="">-- Sélectionner --</option>
+            <option value="auteur">Auteur</option>
+            <option value="article">Article</option>
+            <option value="revue">Revue</option>
+            <option value="comite">Comité</option>
+            <option value="laboratoire">Laboratoire</option>
+            <option value="ville">Ville</option>
+            <option value="pays">Pays</option>
+            <option value="domaine">Domaine</option>
+            <option value="langue">Langue</option>
+          </select>
+          
+          <label><b>ID à modifier:</b></label>
+          <input type="text" name="id" required placeholder="Ex: 5" style="width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px;">
+          
+          <label><b>Nouvelles données:</b><br><small>(format: colonne1=valeur1, colonne2=valeur2...)</small></label>
+          <textarea name="donnees" required placeholder="Ex: nom=Martin, email=martin@email.com" style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 5px; min-height: 80px; font-family: Arial, sans-serif;"></textarea>
+          
+          <input type="submit" value="Modifier" class="search-button">
+        </form>
+      </div>
+    </div>
+
+    <div class="searchresult-container">
+      <div class="searchresult-block">
+        <h3>Résultats</h3>
+        {% if message %}
+          <p style="padding: 10px; background-color: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 5px; margin-bottom: 15px;"><b>{{ message }}</b></p>
+        {% endif %}
+        {% if resultat %}
+          <div>
+            {% for ligne in resultat %}
+              <p class="searchresult-articles">
+                {% for col in ligne %}
+                  {{ col }}<br>
+                {% endfor %}
+              </p>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p style="color: #999;">Les résultats apparaîtront ici</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
