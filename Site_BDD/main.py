@@ -211,60 +211,86 @@ def page_administrateur():
         return render_template("page_administrateur.html")
     return redirect(url_for('admin'))
 
-@app.route("/admin_action", methods = ["POST"])
+@app.route("/admin_action", methods=["POST"])
 def admin_action():
     action = request.form.get("action")
     table = request.form.get("table")
     message = ""
+
+    colonnes_possibles = {
+        "personne": {"nom", "prenom"},
+        "administrateur": {"mot_de_passe", "idPersonne"},
+        "auteur": {"email", "site_web_auteur", "idPersonne"},
+        "comite": {"nom_comite"},
+        "revue": {"nom_revue", "idComite"},
+        "langue": {"nom_langue"},
+        "article": {"nb_page", "annee_pub", "site_web_article", "idRevue", "volume", "numero", "nom_langue"},
+        "domaine": {"nom_domaine"},
+        "pays": {"nom_pays"},
+        "ville": {"nom_ville", "idPays"},
+        "laboratoire": {"nom_laboratoire", "adresse", "site_web_laboratoire", "type", "idVille"}
+    }
+
+    prim_keys = {
+        "auteur": "idPersonne",
+        "article": "idArticle",
+        "revue": "idRevue",
+        "comite": "idComite",
+        "laboratoire": "idLaboratoire",
+        "ville": "idVille",
+        "pays": "idPays",
+        "domaine": "idDomaine",
+        "langue": "idLangue",
+        "personne": "idPersonne",
+        "administrateur": "idAdministrateur"
+    }
+
     try:
-        with db.connect() as conn:
-            with conn.cursor() as cur:
-                prim_key = {'auteur': 'idPersonne', 'article': 'idArticle', 'revue': 'idRevue', 'comite': 'idComite', 'laboratoire': 'idLaboratoire', 'ville': 'idVille', 'pays': 'idPays', 'domaine': 'idDomaine', 'langue': 'idLangue'}
-                prim_key_table = prim_key.get(table)
-                
-                if action == "ajouter":
-                    donnees = request.form.get("donnees", "").strip()
-                    colonnes, valeurs = [], []
-                    for pair in donnees.split(","):
-                        col, val = pair.split("=")
-                        colonnes.append(col.strip())
-                        valeurs.append(val.strip())
-                    placeholders = ", ".join(["%s"] * len(valeurs))
-                    requete = f"INSERT INTO {table} ({', '.join(colonnes)}) VALUES ({placeholders})"
-                    cur.execute(requete, valeurs)
+        if table not in colonnes_possibles:
+            raise Exception()
+
+        with db.connect() as conn, conn.cursor() as cur:
+            pk = prim_keys.get(table)
+
+            if action in {"ajouter", "modifier"}:
+                donnees = request.form.get("donnees", "").strip()
+                pairs = [p.split("=", 1) for p in donnees.split(",")]
+                colonnes = [c.strip() for c, _ in pairs if c.strip() in colonnes_possibles[table]]
+                valeurs = [v.strip() for c, v in pairs if c.strip() in colonnes_possibles[table]]
+
+                if not colonnes:
+                    raise Exception()
+
+            if action == "ajouter":
+                tempo = ", ".join(["%s"] * len(valeurs))
+                cur.execute(f"INSERT INTO {table} ({', '.join(colonnes)}) VALUES ({tempo})", valeurs)
+                conn.commit()
+                message = f"✓ Élément ajouté dans la table {table}"
+
+            elif action == "supprimer":
+                elem_id = request.form.get("id")
+                cur.execute(f"SELECT 1 FROM {table} WHERE {pk} = %s", (elem_id,))
+                if cur.fetchone():
+                    cur.execute(f"DELETE FROM {table} WHERE {pk} = %s", (elem_id,))
                     conn.commit()
-                    message = f"✓ Élément ajouté dans la table {table}"
+                    message = f"✓ Élément {elem_id} supprimé de la table {table}"
+                else:
+                    message = f"✗ Élément {elem_id} inexistant"
 
-                elif action == "supprimer":
-                    elem_id = request.form.get("id")
-                    cur.execute(f"SELECT * FROM {table} WHERE {prim_key_table} = %s", (elem_id,))
-                    if cur.fetchone():
-                        cur.execute(f"DELETE FROM {table} WHERE {prim_key_table} = %s", (elem_id,))
-                        conn.commit()
-                        message = f"✓ Élément {elem_id} supprimé de la table {table}"
-                    else:
-                        message = f"✗ Élément {elem_id} inexistant"
-
-                elif action == "modifier":
-                    elem_id = request.form.get("id")
-                    donnees = request.form.get("donnees", "").strip()
-                    cur.execute(f"SELECT * FROM {table} WHERE {prim_key_table} = %s", (elem_id,))
-                    if cur.fetchone():
-                        updates, valeurs = [], []
-                        for pair in donnees.split(","):
-                            col, val = pair.split("=")
-                            updates.append(f"{col.strip()} = %s")
-                            valeurs.append(val.strip())
-                        valeurs.append(elem_id)
-                        requete = (f"UPDATE {table} SET {', '.join(updates)} " f"WHERE {prim_key_table} = %s")
-                        cur.execute(requete, valeurs)
-                        conn.commit()
-                        message = f"✓ Élément modifié dans la table {table}"
-                    else:
-                        message = f"✗ Élément inexistant"
+            elif action == "modifier":
+                elem_id = request.form.get("id")
+                cur.execute(f"SELECT 1 FROM {table} WHERE {pk} = %s", (elem_id,))
+                if cur.fetchone():
+                    affectations = ", ".join(f"{c} = %s" for c in colonnes)
+                    cur.execute(f"UPDATE {table} SET {affectations} WHERE {pk} = %s", valeurs + [elem_id])
+                    conn.commit()
+                    message = f"✓ Élément {elem_id} modifié dans la table {table}"
+                else:   
+                    message = f"✗ Élément inexistant"
     except:
-        message = f"✗ Erreur: Je sais pas ou mais il y a un probleme quelque part."
+        message = "✗ Erreur: Je sais pas ou mais il y a un probleme quelque part."
     return render_template("page_administrateur.html", message=message)
+
 
 if __name__ == '__main__':
     app.run()
